@@ -1,7 +1,8 @@
 
+import { FormSignIn } from "./_components/login/formLogin";
 import "./globals.css";
 
-import { FormSignIn } from "./_components/formTeste";
+
 
 export default function Home() {
   return (

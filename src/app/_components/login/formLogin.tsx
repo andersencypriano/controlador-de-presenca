@@ -1,10 +1,9 @@
 "use client"
-
-import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
 import * as z from "zod"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,73 +16,74 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { signIn } from "@/src/lib/auth-client"
+import { Spinner } from "@/components/ui/spinner"
+
 
 const formSchemaSignIn = z.object({
-  name: z
+  email: z
     .string()
-    .min(5, "Bug title must be at least 5 characters.")
-    .max(32, "Bug title must be at most 32 characters."),
+    .email("E-mail inválido")
+    .min(1, "E-mail é obrigatório"),
   password: z
     .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
+    .min(6, "Sua senha precisa ter no minimo 6 caracteres")
+    .max(8, "Sua senha precisa ter no maximo 8 caracteres"),
 })
 
+
 export function FormSignIn() {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof formSchemaSignIn>>({
     resolver: zodResolver(formSchemaSignIn),
     defaultValues: {
-      name: "",
+      email: "",
       password: "",
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchemaSignIn>) {
-    console.log(data)
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    })
+  async function onSubmit(data: z.infer<typeof formSchemaSignIn>) {
+    const res = await signIn.email({
+      email: data.email,
+      password: data.password,
+    });
+    if (res.error) {
+      setError(res.error.message || "Something went wrong.")
+    } else {
+      router.push("/dashboard");
+    }
+
   }
 
   return (
     <Card className="w-full sm:max-w-md">
       <CardHeader>
-        <CardTitle>Bug Report</CardTitle>
+        <CardTitle>Fazer login</CardTitle>
         <CardDescription>
-          Help us improve by reporting bugs you encounter.
+          Insira seu e-mail e senha.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form id="form-signin" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
-              name="name"
+              name="email"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="input-name">
-                    Nome
+                  <FieldLabel htmlFor="input-email">
+                    E-mail
                   </FieldLabel>
                   <Input
                     {...field}
-                    id="input-name"
+                    id="input-email"
                     aria-invalid={fieldState.invalid}
                     placeholder="Insiria o e-mail"
                     autoComplete="off"
@@ -100,7 +100,7 @@ export function FormSignIn() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="input-password">
-                    Nome
+                    Senha
                   </FieldLabel>
                   <Input
                     {...field}
@@ -108,6 +108,7 @@ export function FormSignIn() {
                     aria-invalid={fieldState.invalid}
                     placeholder="Insiria a senha"
                     autoComplete="off"
+                    type="password"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -116,18 +117,24 @@ export function FormSignIn() {
               )}
             />
           </FieldGroup>
+
         </form>
       </CardContent>
       <CardFooter>
         <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Limpar
+          <Button type="submit" form="form-signin" className="w-full cursor-pointer" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? <>Entrando <Spinner /></> : "Entrar"}
           </Button>
-          <Button type="submit" form="form-signin">
-            Entrar
-          </Button>
+
         </Field>
+
       </CardFooter>
+
+      <span className="text-center mb-4">
+      {error && (
+        <FieldError errors={[{ message: error }]} />
+      )}
+      </span>
     </Card>
   )
 }
