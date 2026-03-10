@@ -12,6 +12,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const alunoExistente = await prisma.aluno.findUnique({
+      where: { cpf },
+    });
+
+    if (alunoExistente) {
+      return NextResponse.json(
+        { error: "Aluno já cadastrado." },
+        { status: 400 }
+      );
+    }
+
     const aluno = await prisma.aluno.create({
       data: {
         nome,

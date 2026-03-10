@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "../../../../src/lib/auth-client";
+import { Button } from "@/components/ui/button";
 export default function SignInPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +45,9 @@ export default function SignInPage() {
           className="w-full bg-white text-black font-medium rounded-md px-4 py-2 hover:bg-gray-200"
         >
           
+          
         </button>
+        <Button>Sign In</Button>
       </form>
     </main>
   );

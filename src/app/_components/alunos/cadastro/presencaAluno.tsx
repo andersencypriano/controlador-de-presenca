@@ -3,22 +3,19 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 
 type Inputs = {
-  nome: string;
-  telefone: string;
   cpf: string;
 };
 
-export default function CadastroAlunos() {
+export default function PresencaAluno() {
   const {
     register,
     handleSubmit,
-    reset,
-    formState: { isSubmitting },
+    formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const response = await fetch("/api/alunos/cadastro", {
+      const response = await fetch("/api/alunos/presenca", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,27 +29,16 @@ export default function CadastroAlunos() {
         return;
       }
 
-      alert("Aluno cadastrado com sucesso!");
-      reset();
+      alert("Presença registrada com sucesso!");
     } catch (error) {
-      console.error("Erro ao cadastrar aluno:", error);
-      alert("Erro inesperado ao cadastrar aluno.");
+      console.error("Erro ao registrar presença:", error);
+      alert("Erro inesperado ao registrar presença.");
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 mx-auto">
-      <div className="grid grid-cols-1 gap-4 md:grid md:grid-cols-3">
-        <input
-          className="w-full rounded-md border border-neutral-700 px-3 py-2"
-          placeholder="Nome"
-          {...register("nome", { required: true })}
-        />
-        <input
-          className="w-full rounded-md border border-neutral-700 px-3 py-2"
-          placeholder="Telefone"
-          {...register("telefone", { required: true })}
-        />
+      <div className="grid grid-cols-3 gap-4">
         <input
           className="w-full rounded-md border border-neutral-700 px-3 py-2"
           placeholder="CPF"
@@ -63,7 +49,7 @@ export default function CadastroAlunos() {
         className="w-full bg-white text-black font-medium rounded-md px-4 py-2 hover:bg-gray-200"
         type="submit"
       >
-        {isSubmitting ? "Cadastrando..." : "Cadastrar"}
+        Marcar Presença
       </button>
     </form>
   );
