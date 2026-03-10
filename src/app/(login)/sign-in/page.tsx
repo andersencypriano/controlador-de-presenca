@@ -47,7 +47,7 @@ export default function SignInPage() {
           
           
         </button>
-        <Button>Sign In</Button>
+        
       </form>
     </main>
   );
