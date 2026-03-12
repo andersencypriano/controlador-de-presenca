@@ -1,22 +1,45 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm, SubmitHandler } from "react-hook-form"
+import * as z from "zod"
+import { useRouter } from "next/navigation"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useState } from "react";
 
-import { useForm, SubmitHandler } from "react-hook-form";
 
-type Inputs = {
-  nome: string;
-  telefone: string;
-  cpf: string;
-};
+const formSchemaCadastroAlunos = z.object({
+  nome: z
+    .string()
+    .min(1, "E-mail é obrigatório"),
+  telefone: z
+    .string()
+    .min(11, "Sua senha precisa ter no minimo 6 caracteres"),
+  cpf: z
+    .string()
+    .min(11, "Seu CPF precisa ter no minimo 11 caracteres"),
+})
 
 export default function CadastroAlunos() {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
-  } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
+  const form = useForm<z.infer<typeof formSchemaCadastroAlunos>>({
+    resolver: zodResolver(formSchemaCadastroAlunos),
+    defaultValues: {
+      nome: "",
+      telefone: "",
+      cpf: "",
+    },
+  })
+
+
+
+  async function onSubmit(data: z.infer<typeof formSchemaCadastroAlunos>) {
     try {
       const response = await fetch("/api/alunos/cadastro", {
         method: "POST",
@@ -28,44 +51,115 @@ export default function CadastroAlunos() {
 
       if (!response.ok) {
         const erro = await response.json().catch(() => null);
-        alert(erro?.error ?? "Erro ao cadastrar aluno.");
+        setError(erro?.error ?? "Erro ao cadastrar aluno.");
         return;
       }
 
       alert("Aluno cadastrado com sucesso!");
-      reset();
+      form.reset();
+      router.push("/aluno");
     } catch (error) {
       console.error("Erro ao cadastrar aluno:", error);
       alert("Erro inesperado ao cadastrar aluno.");
     }
-  };
+
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 mx-auto">
-      <div className="grid grid-cols-1 gap-4 md:grid md:grid-cols-3">
-        <input
-          className="w-full rounded-md border border-neutral-700 px-3 py-2"
-          placeholder="Nome"
-          {...register("nome", { required: true })}
-        />
-        <input
-          className="w-full rounded-md border border-neutral-700 px-3 py-2"
-          placeholder="Telefone"
-          {...register("telefone", { required: true })}
-        />
-        <input
-          className="w-full rounded-md border border-neutral-700 px-3 py-2"
-          placeholder="CPF"
-          {...register("cpf", { required: true })}
-        />
-      </div>
-      <button
-        className="w-full bg-white text-black font-medium rounded-md px-4 py-2 hover:bg-gray-200"
-        type="submit"
-      >
-        {isSubmitting ? "Cadastrando..." : "Cadastrar"}
-      </button>
-    </form>
+    <Card className="w-full sm:max-w-md">
+      <CardHeader>
+        <CardTitle>Cadastro de aluno</CardTitle>
+        <CardDescription>
+          Cadastro de aluno.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form id="form-signup-aluno" onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              name="nome"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="input-nome">
+                    Nome
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="input-nome"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Nome"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="telefone"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="input-telefone">
+                    Telefone
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="input-telefone"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Telefone"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="cpf"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="input-cpf">
+                    CPF
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="input-cpf"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="CPF"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+          </FieldGroup>
+
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Field orientation="horizontal">
+          <Button type="submit" form="form-signup-aluno" className="w-full cursor-pointer" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? <>Entrando <Spinner /></> : "Entrar"}
+          </Button>
+
+        </Field>
+
+      </CardFooter>
+
+      <span className="text-center mb-4">
+        {error && (
+          <FieldError errors={[{ message: error }]} />
+        )}
+      </span>
+    </Card>
   );
 }
 
