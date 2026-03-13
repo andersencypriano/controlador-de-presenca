@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PresencaPage() {
     return (
-        <div>
+        <div className="w-full h-screen flex items-center justify-center flex-col">
             <h1>Cadastrar Usuário</h1>
             <CadastroAlunos />
         </div>

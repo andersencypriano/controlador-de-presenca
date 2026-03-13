@@ -14,10 +14,10 @@ import { useState } from "react";
 const formSchemaCadastroAlunos = z.object({
   nome: z
     .string()
-    .min(1, "E-mail é obrigatório"),
+    .min(1, "O campo nome é obrigatório"),
   telefone: z
     .string()
-    .min(11, "Sua senha precisa ter no minimo 6 caracteres"),
+    .min(11, "O telefone precisa ter no minimo 11 caracteres"),
   cpf: z
     .string()
     .min(11, "Seu CPF precisa ter no minimo 11 caracteres"),
@@ -50,6 +50,7 @@ export default function CadastroAlunos() {
       });
 
       if (!response.ok) {
+        
         const erro = await response.json().catch(() => null);
         setError(erro?.error ?? "Erro ao cadastrar aluno.");
         return;
