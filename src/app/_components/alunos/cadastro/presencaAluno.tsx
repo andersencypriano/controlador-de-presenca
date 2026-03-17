@@ -24,7 +24,6 @@ export default function PresencaAluno() {
   });
 
   async function onSubmit(data: z.infer<typeof formSchemaPresencaAlunos>) {
-    console.log('click')
     try {
       const response = await fetch("/api/alunos/presenca", {
         method: "POST",
