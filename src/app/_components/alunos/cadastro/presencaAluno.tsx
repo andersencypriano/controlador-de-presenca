@@ -41,6 +41,7 @@ export default function PresencaAluno() {
       }
 
       alert("Presença registrada com sucesso!");
+      form.reset();
     } catch (error) {
       console.error("Erro ao registrar presença:", error);
       alert("Erro inesperado ao registrar presença.");
