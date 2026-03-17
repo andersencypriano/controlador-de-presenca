@@ -50,6 +50,9 @@ export default function DashboardPage() {
               <SidebarMenuButton asChild>
                 <Link href="/dashboard/alunos/lista">Lista de presença</Link>
               </SidebarMenuButton>
+              <SidebarMenuButton asChild>
+                <Link href="/dashboard/alunos/presenca">Formulário de presença</Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>

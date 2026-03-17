@@ -58,7 +58,6 @@ export default function CadastroAlunos() {
 
       alert("Aluno cadastrado com sucesso!");
       form.reset();
-      router.push("/aluno");
     } catch (error) {
       console.error("Erro ao cadastrar aluno:", error);
       alert("Erro inesperado ao cadastrar aluno.");
