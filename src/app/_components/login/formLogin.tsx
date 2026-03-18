@@ -2,8 +2,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -39,7 +39,6 @@ const formSchemaSignIn = z.object({
 
 export function FormSignIn() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchemaSignIn>>({
     resolver: zodResolver(formSchemaSignIn),
@@ -55,8 +54,23 @@ export function FormSignIn() {
       password: data.password,
     });
     if (res.error) {
-      setError(res.error.message || "Something went wrong.")
+      toast.error(res.error.message || "Something went wrong.", {
+        description: res.error.message || "Something went wrong.",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      })
     } else {
+      toast.success("Login realizado com sucesso!", {
+        description: "Login realizado com sucesso!",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      })
       router.push("/dashboard");
     }
 
@@ -129,12 +143,6 @@ export function FormSignIn() {
         </Field>
 
       </CardFooter>
-
-      <span className="text-center mb-4">
-      {error && (
-        <FieldError errors={[{ message: error }]} />
-      )}
-      </span>
     </Card>
   )
 }

@@ -13,6 +13,7 @@ import {
 
 import { localISODate, formatHora } from "@/utils/utils";
 import BackToDashboardButton from "@/src/app/_components/BackToDashboardButton";
+import { toast } from "sonner";
 
 type PresencaComAluno = {
   id: string;
@@ -30,7 +31,6 @@ type PresencaComAluno = {
 
 export default function ListaPresencaClient() {
   const [itens, setItens] = React.useState<PresencaComAluno[] | null>(null);
-  const [erro, setErro] = React.useState<string | null>(null);
   const [dataFiltro, setDataFiltro] = React.useState(() => localISODate(new Date()));
 
   React.useEffect(() => {
@@ -38,7 +38,6 @@ export default function ListaPresencaClient() {
 
     (async () => {
       try {
-        setErro(null);
         setItens(null);
         const qs = new URLSearchParams({ data: dataFiltro });
         const res = await fetch(`/api/alunos/presenca?${qs.toString()}`, { method: "GET" });
@@ -51,7 +50,15 @@ export default function ListaPresencaClient() {
       } catch (e) {
         if (!ativo) return;
         setItens([]);
-        setErro(e instanceof Error ? e.message : "Erro ao buscar lista de presença.");
+        const errorMessage = e instanceof Error ? e.message : "Erro ao buscar lista de presença.";
+        toast.error(errorMessage, {
+          description: errorMessage,
+          action: {
+            label: "Fechar",
+            onClick: () => toast.dismiss(),
+          },
+          position: "top-center"
+        });
       }
     })();
 
@@ -79,11 +86,9 @@ export default function ListaPresencaClient() {
 
       <Table className="table-fixed">
         <TableCaption>
-          {erro
-            ? `Falha ao carregar: ${erro}`
-            : itens === null
-              ? "Carregando lista de presença..."
-              : `Lista de Presença (${dataFiltro.split("-").reverse().join("/")})`}
+          {itens === null
+            ? "Carregando lista de presença..."
+            : `Lista de Presença (${dataFiltro.split("-").reverse().join("/")})`}
         </TableCaption>
         <TableHeader>
           <TableRow>

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod"
 
 const formSchemaPresencaAlunos = z.object({
@@ -35,16 +36,37 @@ export default function PresencaAluno() {
 
       if (!response.ok) {
         const erro = await response.json().catch(() => null);
-        alert(erro?.error ?? "Erro ao cadastrar aluno.");
+        toast.error(erro?.error ?? "Erro ao cadastrar aluno.", {
+          description: erro?.error ?? "Erro ao cadastrar aluno.",
+          action: {
+            label: "Fechar",
+            onClick: () => toast.dismiss(),
+          },
+          position: "top-center"
+        })
         form.reset();
         return;
       }
 
-      alert("Presença registrada com sucesso!");
+      toast.success("Presença registrada com sucesso!", {
+        description: "Presença registrada com sucesso!",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      })
       form.reset();
     } catch (error) {
+      toast.error("Erro ao registrar presença!", {
+        description: "Erro ao registrar presença!",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      })
       console.error("Erro ao registrar presença:", error);
-      alert("Erro inesperado ao registrar presença.");
     }
   };
 

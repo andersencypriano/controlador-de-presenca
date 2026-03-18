@@ -1,17 +1,13 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signUp } from "../../../../src/lib/auth-client";
+import { toast } from "sonner";
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-
-
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
 
     const formData = new FormData(e.currentTarget);
 
@@ -23,8 +19,23 @@ export default function SignUpPage() {
 
 
     if (res.error) {
-      setError(res.error.message || "Something went wrong.");
+      toast.error(res.error.message || "Erro ao cadastrar.", {
+        description: res.error.message || "Erro ao cadastrar.",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      });
     } else {
+      toast.success("Cadastro realizado com sucesso!", {
+        description: "Cadastro realizado com sucesso!",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      });
       router.push("/dashboard");
     }
   }
@@ -32,7 +43,6 @@ export default function SignUpPage() {
   return (
     <main className="max-w-md mx-auto p-6 space-y-4 text-white">
       <h1 className="text-2xl font-bold text-black">Cadastrar Administrador</h1>
-      {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
 
         <input

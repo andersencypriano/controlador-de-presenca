@@ -8,8 +8,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useState } from "react";
-
+import { toast } from "sonner";
 
 const formSchemaCadastroAlunos = z.object({
   nome: z
@@ -26,7 +25,6 @@ const formSchemaCadastroAlunos = z.object({
 export default function CadastroAlunos() {
 
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchemaCadastroAlunos>>({
     resolver: zodResolver(formSchemaCadastroAlunos),
@@ -50,15 +48,36 @@ export default function CadastroAlunos() {
       });
 
       if (!response.ok) {
-        
         const erro = await response.json().catch(() => null);
-        setError(erro?.error ?? "Erro ao cadastrar aluno.");
+        toast.error(erro?.error ?? "Erro ao cadastrar aluno.", {
+          description: erro?.error ?? "Erro ao cadastrar aluno.",
+          action: {
+            label: "Fechar",
+            onClick: () => toast.dismiss(),
+          },
+          position: "top-center"
+        })
+        form.reset();
         return;
       }
-
-      alert("Aluno cadastrado com sucesso!");
+      toast.success("Aluno cadastrado com sucesso!", {
+        description: "Aluno cadastrado com sucesso!",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      })
       form.reset();
     } catch (error) {
+      toast.error("Erro ao cadastrar aluno!", {
+        description: "Erro ao cadastrar aluno!",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        position: "top-center"
+      })
       console.error("Erro ao cadastrar aluno:", error);
       alert("Erro inesperado ao cadastrar aluno.");
     }
@@ -153,12 +172,6 @@ export default function CadastroAlunos() {
         </Field>
 
       </CardFooter>
-
-      <span className="text-center mb-4">
-        {error && (
-          <FieldError errors={[{ message: error }]} />
-        )}
-      </span>
     </Card>
   );
 }

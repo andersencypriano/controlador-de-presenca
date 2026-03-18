@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useSession, signOut } from "../../../src/lib/auth-client";
 import { useEffect } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   Sidebar,
   SidebarContent,
@@ -59,7 +60,23 @@ export default function DashboardPage() {
 
         <SidebarFooter className="p-4">
           <button
-            onClick={() => signOut()}
+            onClick={async () => {
+              await signOut({
+                fetchOptions: {
+                  onSuccess: () => {
+                    toast.success("Deslogado com sucesso!", {
+                      description: "Você saiu do sistema.",
+                      action: {
+                        label: "Fechar",
+                        onClick: () => toast.dismiss(),
+                      },
+                      position: "top-center"
+                    });
+                    router.push("/sign-in");
+                  }
+                }
+              });
+            }}
             className="w-full rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-200"
           >
             Sair
