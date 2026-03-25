@@ -1,49 +1,49 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { signUp } from "../../../../src/lib/auth-client";
-import { toast } from "sonner";
+import FormSignUp from '../../_components/login/formSignUp'
 
 export default function SignUpPage() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
+  // async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+  //   e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+  //   const formData = new FormData(e.currentTarget);
 
-    const res = await signUp.email({
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-    });
+  //   const res = await signUp.email({
+  //     name: formData.get("name") as string,
+  //     email: formData.get("email") as string,
+  //     password: formData.get("password") as string,
+  //   });
 
 
-    if (res.error) {
-      toast.error(res.error.message || "Erro ao cadastrar.", {
-        description: res.error.message || "Erro ao cadastrar.",
-        action: {
-          label: "Fechar",
-          onClick: () => toast.dismiss(),
-        },
-        position: "top-center"
-      });
-    } else {
-      toast.success("Cadastro realizado com sucesso!", {
-        description: "Cadastro realizado com sucesso!",
-        action: {
-          label: "Fechar",
-          onClick: () => toast.dismiss(),
-        },
-        position: "top-center"
-      });
-      router.push("/dashboard");
-    }
-  }
+  //   if (res.error) {
+  //     toast.error(res.error.message || "Erro ao cadastrar.", {
+  //       description: res.error.message || "Erro ao cadastrar.",
+  //       action: {
+  //         label: "Fechar",
+  //         onClick: () => toast.dismiss(),
+  //       },
+  //       position: "top-center"
+  //     });
+  //   } else {
+  //     toast.success("Cadastro realizado com sucesso!", {
+  //       description: "Cadastro realizado com sucesso!",
+  //       action: {
+  //         label: "Fechar",
+  //         onClick: () => toast.dismiss(),
+  //       },
+  //       position: "top-center"
+  //     });
+  //     router.push("/dashboard");
+  //   }
+  // }
 
   return (
-    <main className="max-w-md mx-auto p-6 space-y-4 text-white">
-      <h1 className="text-2xl font-bold text-black">Cadastrar Administrador</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <>
+      <main className="max-w-md mx-auto p-6 space-y-4 text-white">
+        <h1 className="text-2xl font-bold text-black">Cadastrar Administrador</h1>
+        <FormSignUp/>
+        {/* <form onSubmit={handleSubmit} className="space-y-4">
 
         <input
           name="name"
@@ -73,7 +73,8 @@ export default function SignUpPage() {
 
           Cadastrar
         </button>
-      </form>
-    </main>
+      </form> */}
+      </main>
+    </>
   );
 }

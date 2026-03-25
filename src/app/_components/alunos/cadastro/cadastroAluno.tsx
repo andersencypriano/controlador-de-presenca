@@ -1,8 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm, SubmitHandler } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
-import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -24,7 +23,6 @@ const formSchemaCadastroAlunos = z.object({
 
 export default function CadastroAlunos() {
 
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchemaCadastroAlunos>>({
     resolver: zodResolver(formSchemaCadastroAlunos),
@@ -61,12 +59,13 @@ export default function CadastroAlunos() {
         return;
       }
       toast.success("Aluno cadastrado com sucesso!", {
-        description: "Aluno cadastrado com sucesso!",
+        description: `Aluno ${data.nome} cadastrado com sucesso!`,
         action: {
           label: "Fechar",
           onClick: () => toast.dismiss(),
         },
-        position: "top-center"
+        position: "top-center",
+        duration: 5000,
       })
       form.reset();
     } catch (error) {
