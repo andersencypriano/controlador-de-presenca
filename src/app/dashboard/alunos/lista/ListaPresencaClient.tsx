@@ -69,9 +69,6 @@ export default function ListaPresencaClient() {
 
   return (
     <div className="w-full min-h-svh flex flex-col">
-      <div className="mb-4">
-        <BackToDashboardButton />
-      </div>
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col">
           <span className="text-sm font-medium">Filtrar por data</span>

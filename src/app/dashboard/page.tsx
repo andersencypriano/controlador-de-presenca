@@ -11,7 +11,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <main className="w-full h-full p-6 text-white">
+      <main className="w-full">
         <h1 className="text-2xl font-bold text-black">Dashboard</h1>
         <p className="mt-2 text-black">Email: {user?.email}</p>
       </main>
