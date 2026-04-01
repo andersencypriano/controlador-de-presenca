@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import BackToDashboardButton from "@/src/app/_components/BackToDashboardButton";
 
 export const metadata: Metadata = {
-  title: 'Cadastro de Usuários',
-  description: 'Cadastro de Usuários',
+    title: 'Cadastro de Usuários',
+    description: 'Cadastro de Usuários',
 };
 
 export default function PresencaPage() {

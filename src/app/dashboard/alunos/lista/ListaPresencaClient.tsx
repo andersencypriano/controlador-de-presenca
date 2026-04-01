@@ -68,7 +68,7 @@ export default function ListaPresencaClient() {
   }, [dataFiltro]);
 
   return (
-    <div className="w-full md:w-1/2 mx-auto">
+    <div className="w-full min-h-svh flex flex-col">
       <div className="mb-4">
         <BackToDashboardButton />
       </div>

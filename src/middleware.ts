@@ -8,6 +8,7 @@ type SessionResponse = {
 };
 
 export async function middleware(request: NextRequest) {
+  // Chamada para verificar a sessão
   const { data: session } = await betterFetch<SessionResponse>("/api/auth/get-session", {
     baseURL: request.nextUrl.origin,
     headers: {
@@ -15,6 +16,7 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // Se o usuário tentar acessar /dashboard sem estar logado
   if (!session?.user) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
@@ -26,5 +28,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  // Ajustado para garantir que pegue o /dashboard exato e sub-rotas
+  matcher: ["/dashboard", "/dashboard/:path*"],
 };
